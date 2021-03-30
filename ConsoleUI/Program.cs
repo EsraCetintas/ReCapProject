@@ -1,4 +1,5 @@
 ﻿using Business.Concrete;
+using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
 using System;
@@ -9,54 +10,57 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            CarManager carManager = new CarManager(new InMemoryCarDal());
+            CarManager carManager = new CarManager(new EfCarDal());
             CarAddTest(carManager);
             CarGetAllTest(carManager);
-            Console.WriteLine("------------->");
-            CarDeleteTest(carManager);
 
-            Console.WriteLine("BrandId");
+            //CarDeleteTest(carManager);
+            //Console.WriteLine("------------->");
+            //CarGetAllTest(carManager);
 
-            CarGetAllBrandId(carManager);
+
 
             Console.WriteLine("------------->");
 
             CarUpdateTest(carManager);
 
-            CarGetAllBrandId(carManager);
 
-        }
-
-        private static void CarGetAllBrandId(CarManager carManager)
-        {
-            foreach (var car in carManager.GetAll())
+            foreach (var b in carManager.GetCarsByBrandId(2))
             {
-                Console.WriteLine(car.BrandId);
+                Console.WriteLine(b.Description);
             }
+
+            Console.WriteLine("b");
+
+            foreach (var c in carManager.GetCarsByColorId(1))
+            {
+                Console.WriteLine(c.Description);
+            }
+
         }
 
         private static void CarUpdateTest(CarManager carManager)
         {
-            carManager.Update(new Car { Id = 6, BrandId = 30 });
+            carManager.Update(new Car { Id = 1, BrandId = 0 });
         }
 
         private static void CarDeleteTest(CarManager carManager)
         {
-            carManager.Delete(new Car { Id = 7, BrandId = 15, ColorId = 1, ModelYear = 2020, DailyPrice = 350, Description = "Kiralık Araç" });
+            //id değiştiriniz
+            carManager.Delete(new Car { Id = 2, BrandId =0, ColorId = 1, ModelYear = 2020, DailyPrice = 350, Description = "Mercedes" });
         }
 
         private static void CarGetAllTest(CarManager carManager)
         {
             foreach (var car in carManager.GetAll())
             {
-                Console.WriteLine(car.Id);
+                Console.WriteLine("araç id/ "+car.Id);
             }
         }
 
         private static void CarAddTest(CarManager carManager)
         {
-            carManager.Add(new Car { Id = 6, BrandId = 5, ColorId = 0, ModelYear = 2012, DailyPrice = 250, Description = "Kiralık Araç" });
-            carManager.Add(new Car { Id = 7, BrandId = 15, ColorId = 1, ModelYear = 2020, DailyPrice = 350, Description = "Kiralık Araç" });
+            carManager.Add(new Car { Id = 4, BrandId = 2, ColorId = 0, ModelYear = 2020, DailyPrice = 0, Description = "Audi" });
         }
     }
 }
