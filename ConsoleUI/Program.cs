@@ -40,7 +40,70 @@ namespace ConsoleUI
             //var resultBrand = brand.GetById(3);
             //Console.WriteLine(resultBrand.Name);
 
+            //CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            //CustomerAddTest(customerManager);
+            //CustomerGetAllTest(customerManager);
 
+            //UserManager userManager = new UserManager(new EfUserDal());
+            //UserAddTest(userManager);
+            //UserGetAllTest(userManager);
+
+            //RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            //RentalAddTest(rentalManager);
+            //Kiralanmış aracın eklenmesi denendi...
+            //var result = rentalManager.Add(new Rental { Id = 2, CarId = 1, CustomerId = 2, RentDate = new DateTime(2021, 4, 3) });
+            //if (result.Success)
+            //{
+            //    RentalGetAllTest(rentalManager);
+            //}
+            //else
+            //{
+            //    Console.WriteLine(result.Message);
+            //}
+
+
+        }
+
+        private static void RentalGetAllTest(RentalManager rentalManager)
+        {
+            foreach (var rental in rentalManager.GetAll().Data)
+            {
+                Console.WriteLine(rental.RentDate);
+            }
+        }
+
+        private static void RentalAddTest(RentalManager rentalManager)
+        {
+            var myRental = new Rental { Id = 1, CarId = 1, CustomerId = 1, RentDate = new DateTime(2021, 4, 3) };
+            rentalManager.Add(myRental);
+        }
+
+        private static void UserGetAllTest(UserManager userManager)
+        {
+            foreach (var user in userManager.GetAll().Data)
+            {
+                Console.WriteLine(user.FirstName + " " + user.LastName);
+            }
+        }
+
+        private static void UserAddTest(UserManager userManager)
+        {
+            userManager.Add(new User { Id = 1, FirstName = "Esra", LastName = "Çetintaş", Email = "esra.cetintas@outlook.com.tr", Password = "123456" });
+        }
+
+        private static void CustomerGetAllTest(CustomerManager customerManager)
+        {
+            foreach (var customer in customerManager.GetAll().Data)
+            {
+                Console.WriteLine(customer.Id);
+            }
+        }
+
+        private static void CustomerAddTest(CustomerManager customerManager)
+        {
+            customerManager.Add(new Customer { Id = 1, UserId = 1, CompanyName = "Looper" });
+            customerManager.Add(new Customer { Id = 2, UserId = 2, CompanyName = "Jingls" });
+            customerManager.Add(new Customer { Id = 3, UserId = 3, CompanyName = "Kalirci" });
         }
 
         private static void CarGetDetailsTest(CarManager carManager)
