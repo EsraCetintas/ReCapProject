@@ -32,7 +32,7 @@ namespace ConsoleUI
 
 
             //BrandManager brand = new BrandManager(new EfBrandDal());
-            //ColorAddTest(brand);
+            //BrandAddTest(brand);
             //BrandGetAll(brand);
             //brand.Update(new Brand { Id = 4, Name = "BMW" });
             //brand.Delete(new Brand { Id = 4 });//id değiştiriniz...
@@ -45,13 +45,22 @@ namespace ConsoleUI
 
         private static void CarGetDetailsTest(CarManager carManager)
         {
-            foreach (var c in carManager.GetCarDetails())
+            var result = carManager.GetCarDetails();
+
+            if (result.Success)
             {
-                Console.WriteLine(c.CarName + " " + c.BrandName + " " + c.ColorName + " " + c.DailyPrice);
+                foreach (var c in result.Data)
+                {
+                    Console.WriteLine(c.CarName + " " + c.BrandName + " " + c.ColorName + " " + c.DailyPrice);
+                }
+            }
+            else
+            {
+                Console.WriteLine(result.Message); 
             }
         }
 
-        private static void ColorAddTest(BrandManager brand)
+        private static void BrandAddTest(BrandManager brand)
         {
             brand.Add(new Brand { Id = 1, Name = "Mercedes" });
             brand.Add(new Brand { Id = 2, Name = "Range Rover" });
@@ -61,15 +70,20 @@ namespace ConsoleUI
 
         private static void BrandGetAll(BrandManager brand)
         {
-            foreach (var b in brand.GetAll())
+            var result = brand.GetAll();
+            if (result.Success)
             {
-                Console.WriteLine(b.Id + " " + b.Name);
+                foreach (var b in result.Data)
+                {
+                    Console.WriteLine(b.Id + " " + b.Name);
+                }
             }
+            
         }
 
         private static void ColorGetAllTest(ColorManager color)
         {
-            foreach (var clr in color.GetAll())
+            foreach (var clr in color.GetAll().Data)
             {
                 Console.WriteLine(clr.Id + " " + clr.Name);
             }
@@ -85,7 +99,7 @@ namespace ConsoleUI
 
         private static void CarsByColorId(CarManager carManager)
         {
-            foreach (var c in carManager.GetCarsByColorId(1))
+            foreach (var c in carManager.GetCarsByColorId(1).Data)
             {
                 Console.WriteLine(c.Description);
             }
@@ -93,7 +107,7 @@ namespace ConsoleUI
 
         private static void CarsByBrandIdTest(CarManager carManager)
         {
-            foreach (var b in carManager.GetCarsByBrandId(2))
+            foreach (var b in carManager.GetCarsByBrandId(2).Data)
             {
                 Console.WriteLine(b.Description);
             }
@@ -116,7 +130,7 @@ namespace ConsoleUI
 
         private static void CarGetAllTest(CarManager carManager)
         {
-            foreach (var car in carManager.GetAll())
+            foreach (var car in carManager.GetAll().Data)
             {
                 Console.WriteLine("araç id/ "+car.Id);
             }
