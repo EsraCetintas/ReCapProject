@@ -41,7 +41,12 @@ namespace Business.Concrete
 
         public IDataResult<User> GetById(int id)
         {
-            return new SuccessDataResult<User>(_userDal.Get(p=>p.Id==id));
+            var result = _userDal.Get(p => p.Id == id);
+            if (result == null)
+            {
+                return new ErrorDataResult<User>();
+            }
+            return new SuccessDataResult<User>(result);
         }
 
         public IResult Update(User user)
