@@ -40,5 +40,10 @@ namespace Business.Constants
         public static string RentalDateNull = "Kiralama henüz geri dönmedi.";
 
         public static string MaintenanceTime = "Sistem bakımda";
+
+        public static string ImageNotFound = "Resim bulunamadı";
+        public static string CarImageDeleted = "Resim silindi";
+        public static string CarImageUpdated = "Resim güncellendi";
+
     }
 }
