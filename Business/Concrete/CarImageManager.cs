@@ -29,7 +29,7 @@ namespace Business.Concrete
                 return result;
             }
 
-            var imageResult = FileHelper.Upload(file);
+            var imageResult =FileHelper.Upload(file);
 
             if (!imageResult.Success)
             {
