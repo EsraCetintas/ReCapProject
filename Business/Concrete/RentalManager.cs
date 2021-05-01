@@ -2,6 +2,7 @@
 using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -23,6 +24,7 @@ namespace Business.Concrete
 
         [SecuredOperation("user")]
         [ValidationAspect(typeof(RentalValidator))]
+        [CacheRemoveAspect("Get")]
         public IResult Add(Rental rental)
         {
             if (rental.ReturnDate == null)
@@ -35,12 +37,14 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("user")]
+        [CacheRemoveAspect("Get")]
         public IResult Delete(Rental rental)
         {
             _rentalDal.Delete(rental);
             return new SuccessResult(Messages.RentalDeleted);
         }
 
+        [CacheAspect]
         public IDataResult<List<Rental>> GetAll()
         {
             if (DateTime.Now.Hour == 22)
@@ -50,6 +54,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(),Messages.RentalsListed);
         }
 
+        [CacheAspect]
         public IDataResult<Rental> GetById(int id)
         {
             var result = _rentalDal.Get(p => p.Id == id);
@@ -62,6 +67,7 @@ namespace Business.Concrete
 
         [SecuredOperation("user")]
         [ValidationAspect(typeof(BrandValidator))]
+        [CacheRemoveAspect("Get")]
         public IResult Update(Rental rental)
         {
             _rentalDal.Update(rental);
