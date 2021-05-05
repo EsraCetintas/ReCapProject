@@ -10,6 +10,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Business.Concrete
 {
@@ -43,10 +44,7 @@ namespace Business.Concrete
         [CacheAspect]
         public IDataResult<List<Color>> GetAll()
         {
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorDataResult<List<Color>>(Messages.MaintenanceTime);
-            }
+            Thread.Sleep(5000);
             return new SuccessDataResult<List<Color>>(_colorDal.GetAll(),Messages.ColorListed);
         }
 

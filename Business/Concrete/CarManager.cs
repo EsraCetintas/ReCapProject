@@ -14,6 +14,7 @@ using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Business.Concrete
 {
@@ -46,10 +47,7 @@ namespace Business.Concrete
         [CacheAspect]
         public IDataResult<List<Car>> GetAll()
         {
-            if (DateTime.Now.Hour == 21)
-            {
-                return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
-            }
+            Thread.Sleep(5000);
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarListed);
         }
 

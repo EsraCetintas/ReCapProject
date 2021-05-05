@@ -10,6 +10,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Business.Concrete
 {
@@ -47,10 +48,7 @@ namespace Business.Concrete
         [CacheAspect]
         public IDataResult<List<Rental>> GetAll()
         {
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorDataResult<List<Rental>>(Messages.MaintenanceTime);
-            }
+            Thread.Sleep(5000);
             return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(),Messages.RentalsListed);
         }
 
