@@ -7,6 +7,7 @@ using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,7 +44,6 @@ namespace Business.Concrete
         [CacheAspect]
         public IDataResult<List<Customer>> GetAll()
         {
-            Thread.Sleep(5000);
             return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(), Messages.CustomerListed);
         }
 
@@ -56,6 +56,11 @@ namespace Business.Concrete
                 return new ErrorDataResult<Customer>();
             }
             return new SuccessDataResult<Customer>(result,Messages.CustomerListed);
+        }
+
+        public IDataResult<List<CustomerDetailDto>> GetCustomerDetails()
+        {
+            return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetails());
         }
 
         [SecuredOperation("user")]
