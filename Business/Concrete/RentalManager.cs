@@ -4,6 +4,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -18,10 +19,12 @@ namespace Business.Concrete
     public class RentalManager : IRentalService
     {
         IRentalDal _rentalDal;
+        ICarService _carService;
 
-        public RentalManager(IRentalDal rentalDal)
+        public RentalManager(IRentalDal rentalDal, ICarService carService)
         {
             _rentalDal = rentalDal;
+            _carService = carService;
         }
 
         [SecuredOperation("user")]
@@ -29,9 +32,10 @@ namespace Business.Concrete
         [CacheRemoveAspect("IRentalService.Get")]
         public IResult Add(Rental rental)
         {
-            if (rental.ReturnDate == null)
+            var result = BusinessRules.Run(CheckIfCarExists(rental.CarId), CheckRentalDate(rental));
+            if (result!=null)
             {
-                return new ErrorResult(Messages.NotRental);
+                return result;
             }
 
             _rentalDal.Add(rental);
@@ -75,6 +79,43 @@ namespace Business.Concrete
         {
             _rentalDal.Update(rental);
             return new SuccessResult(Messages.RentalUpdated);
+        }
+
+        private IResult CheckIfCarExists(int carId)
+        {
+            var result = _carService.GetById(carId).Data;
+            if (result == null)
+            {
+                return new ErrorResult(Messages.CarNotExists);
+            }
+            return new SuccessResult();
+
+        }
+
+        private IResult CheckRentalDate(Rental rental)
+        {
+            var results = _rentalDal.GetAll(r => r.CarId == rental.CarId);
+            foreach(var result in results)
+            {
+                if (rental.ReturnDate == null)
+                {
+                    return new ErrorResult(Messages.NotRental);
+                }
+                else if ((rental.RentDate <= result.RentDate) && (rental.ReturnDate <= result.ReturnDate))
+                {
+                    return new ErrorResult(Messages.NotRental);
+                }
+                else if ((rental.RentDate <= result.RentDate) && (rental.ReturnDate >= result.ReturnDate))
+                {
+                    return new ErrorResult(Messages.NotRental);
+                }
+                else if ((rental.RentDate >= result.RentDate) && (rental.ReturnDate <= result.ReturnDate))
+                {
+                    return new ErrorResult(Messages.NotRental);
+                }
+            }
+
+            return new SuccessResult();
         }
     }
 }

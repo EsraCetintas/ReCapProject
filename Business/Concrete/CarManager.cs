@@ -6,6 +6,8 @@ using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Entities;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -13,6 +15,7 @@ using Entities.DTOs;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -56,7 +59,7 @@ namespace Business.Concrete
             var result = _carDal.GetCarDetails(p => p.CarId == carId);
             if (result == null)
             {
-                new ErrorDataResult<Car>();
+                new ErrorDataResult<CarDetailDto>();
             }
             return new SuccessDataResult<List<CarDetailDto>>(result);
         }
@@ -65,9 +68,6 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(), Messages.DetailsListed);
         }
-
-      
-
 
         public IDataResult<List<CarDetailDto>> GetCarsByBrandId(int brandId)
         {
@@ -79,6 +79,10 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(p => p.ColorId == colorId));
         }
 
+        public IDataResult<List<CarDetailDto>> GetCarsByColorIdByBrandId(int? colorId,int? brandId)
+        {
+            return  CheckId(colorId, brandId);
+        }
 
         [SecuredOperation("user")]
         [ValidationAspect(typeof(CarValidator))]
@@ -88,5 +92,25 @@ namespace Business.Concrete
             _carDal.Update(car);
             return new SuccessResult(Messages.CarUpdated);
         }
+
+        private IDataResult<List<CarDetailDto>> CheckId(int? colorId,int? brandId)
+        {
+            if (colorId != null && brandId==null)
+            {
+                return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(p => p.ColorId == colorId));
+            }
+          else  if (colorId == null && brandId != null)
+            {
+                return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(p => p.BrandId == brandId));
+            }
+            else if(colorId==null && brandId == null)
+            {
+                return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails());
+            }
+
+            return new SuccessDataResult<List<CarDetailDto>>(
+                _carDal.GetCarDetails(p => (p.ColorId == colorId) && (p.BrandId == brandId)));
+        }
+      }
     }
-}
+

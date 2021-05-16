@@ -57,5 +57,7 @@ namespace Business.Constants
         public static string AccessTokenCreated = "Token oluşturuldu";
 
         public static string DetailsListed;
+
+        public static string CarNotExists = "Araç bulunamadı";
     }
 }
